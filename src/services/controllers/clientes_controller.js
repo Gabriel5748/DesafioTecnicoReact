@@ -4,6 +4,10 @@ const listarClientes = (req, res) => {
   res.json(clientes);
 };
 
+const verificarCliente = (clienteNome) => {
+  return clientes.find((cliente) => cliente.nome === clienteNome);
+};
+
 const adicionarClientes = (req, res) => {
   const { nome, email, telefone, cpf, cnpj } = req.body;
   const id = clientes.length + 1;
@@ -53,6 +57,7 @@ const removerClientes = (req, res) => {
 
 export default {
   listarClientes,
+  verificarCliente,
   adicionarClientes,
   atualizarClientes,
   removerClientes,

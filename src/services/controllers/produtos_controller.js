@@ -4,6 +4,11 @@ const listarProdutos = (req, res) => {
   res.json(produtos);
 };
 
+const verificarProdutoPreco = (nomeProduto) => {
+  const produto = produtos.find((p) => p.nome === nomeProduto);
+  return produto ? produto.preco : null;
+};
+
 const adicionarProdutos = (req, res) => {
   const { nome, preco, estoque, categoria } = req.body;
   const id = produtos.length + 1;
@@ -50,6 +55,7 @@ const removerProdutos = (req, res) => {
 };
 
 export default {
+  verificarProdutoPreco,
   listarProdutos,
   adicionarProdutos,
   atualizarProdutos,

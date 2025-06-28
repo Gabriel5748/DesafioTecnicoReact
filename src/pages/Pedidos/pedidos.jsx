@@ -1,8 +1,8 @@
-import { DataGrid } from "@mui/x-data-grid";
-
-import "@mui/x-data-grid/themeAugmentation";
 import { useEffect, useRef, useState } from "react";
 import MyDataGrid from "../../components/datagrid";
+import AddPedido from "./add_pedido";
+import ExportarDados from "../../components/export_data";
+import AtualizarPedido from "../Pedidos/update_pedido";
 
 function Pedidos() {
   const api_url = "http://localhost:3000/api/pedidos";
@@ -42,7 +42,7 @@ function Pedidos() {
     if (response.ok) {
       const pedidoEditado = await response.json();
 
-      setProdutos((prev) =>
+      setPedidos((prev) =>
         prev.map((pedido) =>
           pedido.id === pedidoEditado.id ? pedidoEditado : pedido
         )
@@ -58,21 +58,36 @@ function Pedidos() {
     });
 
     if (response.ok) {
-      setProdutos((prev) => prev.filter((pedido) => pedido.id != pedidoId));
+      setPedidos((prev) => prev.filter((pedido) => pedido.id != pedidoId));
     } else {
       alert("Falha ao remover pedido!");
     }
   }
 
   const pedidoColumns = [
-    { field: "id", headerName: "ID do Pedido", width: 100 },
-    { field: "clienteId", headerName: "ID do Cliente", width: 130 },
-    { field: "itens", headerName: "Itens", width: 100 },
+    { field: "id", headerName: "Pedido ID", width: 100 },
+    {
+      field: "itens",
+      headerName: "Itens",
+      width: 300,
+      renderCell: (params) => {
+        return params.value
+          .map(
+            (item) =>
+              `${item.nome} x ${item.quantidade} unidade(s)
+              `
+          )
+          .join(", ");
+      },
+    },
     { field: "total", headerName: "Total (R$)", width: 120 },
+    { field: "clienteNome", headerName: "Cliente Nome", width: 130 },
+    { field: "clienteId", headerName: "Cliente ID", width: 130 },
+    { field: "data", headerName: "Data Pedido", width: 100 },
   ];
 
-  return [
-    <div style={{ height: 300, width: "100%" }}>
+  return (
+    <div>
       <MyDataGrid
         data={pedidos}
         columns={pedidoColumns}
@@ -80,8 +95,13 @@ function Pedidos() {
         funcDelete={deletarPedido}
         pageSize={5}
       />
-    </div>,
-  ];
+      <div className="flex justify-between mt-8">
+        <AddPedido api_url={api_url} setPedidos={setPedidos}></AddPedido>
+        <ExportarDados data={pedidos}></ExportarDados>
+        <AtualizarPedido ref={atualizarRef} onSubmit={salvarEdicao} />
+      </div>
+    </div>
+  );
 }
 
 export default Pedidos;

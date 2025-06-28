@@ -1,5 +1,4 @@
 import { mkConfig, generateCsv, download } from "export-to-csv";
-import { usePDF } from "react-to-pdf";
 import { Download } from "lucide-react";
 import { useState } from "react";
 
@@ -18,21 +17,31 @@ function ExportarDados({ data }) {
       return;
     }
 
-    const csv = generateCsv(csvConfig)(data);
+    const dadosFormatados = data.map((pedido) => {
+      const linha = {
+        id: pedido.id,
+        cliente: pedido.clienteNome || pedido.cliente?.nome,
+        data: pedido.data,
+        total: pedido.total,
+      };
+
+      pedido.itens.forEach((item, index) => {
+        linha[`item_${index + 1}`] = item.nome;
+        linha[`qtd_${index + 1}`] = item.quantidade;
+      });
+
+      return linha;
+    });
+
+    const csvConfig = mkConfig({
+      filename: "Dados_Pedido",
+      fieldSeparator: ",",
+      decimalSeparator: ".",
+      useKeysAsHeaders: true,
+    });
+
+    const csv = generateCsv(csvConfig)(dadosFormatados);
     download(csvConfig)(csv);
-  };
-
-  const ExportarPDF = () => {
-    const { toPDF, targetRef } = usePDF();
-
-    return (
-      <div>
-        <button type="button" onClick={() => toPDF()}>
-          Exportar Para PDF
-        </button>
-        <div ref={targetRef}>{/* Conteúdo do PDF */}</div>
-      </div>
-    );
   };
 
   return (
@@ -58,6 +67,7 @@ function ExportarDados({ data }) {
         </button>
 
         <button
+          // onClick={exportarPDF}
           type="button"
           className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow"
         >

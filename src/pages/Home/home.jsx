@@ -2,9 +2,12 @@ import { useState } from "react";
 import Clientes from "../Clientes/clientes";
 import Produtos from "../Produtos/produtos";
 import Pedidos from "../Pedidos/pedidos";
+import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 function Home() {
   const [pagina, setPagina] = useState("clientes");
+  const navigate = useNavigate();
 
   return (
     <div className="flex min-h-screen bg-purple-100">
@@ -32,6 +35,13 @@ function Home() {
           }`}
         >
           Pedidos
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          className="flex gap-2 text-white font-semibold py-3 rounded-md transition-colors duration-300 hover:bg-purple-600 "
+        >
+          <LogOut />
+          <h2 className="font-bold">Sair</h2>
         </button>
       </nav>
 

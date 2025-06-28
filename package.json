@@ -21,6 +21,7 @@
     "lucide-react": "^0.523.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.59.0",
     "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^7.6.2",
     "react-to-pdf": "^2.0.1",

@@ -1,77 +1,122 @@
 import { useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { Plus, Trash2, FilePlus2 } from "lucide-react";
 
 function AddPedido({ api_url, setPedidos }) {
-  let [name, setName] = useState("");
-  let [preco, setPreco] = useState("");
-  let [estoque, setEstoque] = useState("");
-  let [categoria, setCategoria] = useState("");
+  const [toggleForm, setToggleForm] = useState(false);
 
-  async function adicionarProduto() {
-    let produto = {
-      nome: name,
-      preco: preco,
-      estoque: estoque,
-      categoria: categoria,
-    };
-    const response = await fetch(api_url, {
-      method: "POST",
-      body: JSON.stringify(produto),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const { register, control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      clienteNome: "",
+      itens: [{ nome: "", quantidade: "" }],
+    },
+  });
 
-    if (response.ok) {
-      const novoProduto = await response.json();
-      setProdutos((prev) => [...prev, novoProduto]);
-      setName("");
-      setPreco("");
-      setEstoque("");
-      setCategoria("");
-    } else {
-      alert("Falha ao adicionar novo produto!");
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "itens",
+  });
+
+  function toggleFormVisibility() {
+    setToggleForm(!toggleForm);
+  }
+
+  async function onSubmit(pedidos) {
+    try {
+      const response = await fetch(api_url, {
+        method: "POST",
+        body: JSON.stringify(pedidos),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensagem || "Falha ao adicionar novo pedido!");
+      }
+
+      setPedidos((prev) => [...prev, data]);
+      reset();
+    } catch (error) {
+      alert(error.message);
     }
   }
+
   return (
     <div>
-      <div className="flex flex-col gap-5 justify-center items-center bg-purple-400 w-[500px]  rounded-md">
+      <div className="flex justify-start mb-8">
+        <button
+          type="button"
+          className="flex flex-row gap-2 font-bold"
+          onClick={toggleFormVisibility}
+        >
+          <FilePlus2 />
+          <h2>Adicionar Pedido</h2>
+        </button>
+      </div>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={`${
+          toggleForm ? "flex" : "hidden"
+        } flex-col gap-5 bg-purple-600 rounded-lg p-8 w-[500px] shadow-lg`}
+      >
+        {fields.map((field, index) => (
+          <div key={field.id} className="flex gap-2 items-center">
+            <input
+              type="text"
+              placeholder={`Item ${index + 1}`}
+              {...register(`itens.${index}.nome`, {
+                required: "O item é obrigatório",
+              })}
+              className="flex-1 bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+            <input
+              type="number"
+              min={1}
+              placeholder="Qtd"
+              {...register(`itens.${index}.quantidade`, {
+                required: "Qtd obrigatória",
+                min: 1,
+              })}
+              className="w-20 bg-purple-700 text-white px-3 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+            <button
+              type="button"
+              onClick={() => remove(index)}
+              className="text-red-300 hover:text-red-500"
+            >
+              {fields.length > 1 && <Trash2 />}
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={() => append({ nome: "", quantidade: "" })}
+          className="flex items-center gap-2 text-white font-semibold hover:text-purple-200"
+        >
+          <Plus /> Adicionar outro item
+        </button>
+
         <input
-          className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
           type="text"
-          placeholder="Informe o nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-          type="text"
-          placeholder="Informe o preço unitário"
-          value={preco}
-          onChange={(e) => setPreco(e.target.value)}
-        />
-        <input
-          className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-          type="text"
-          placeholder="Informe a quantidade do estoque"
-          value={estoque}
-          onChange={(e) => setEstoque(e.target.value)}
-        />
-        <input
-          className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-          type="text"
-          placeholder="Informe a categoria"
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
+          placeholder="Nome do cliente"
+          {...register("clienteNome", {
+            required: "Nome do cliente é obrigatório",
+          })}
+          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
 
         <button
           type="submit"
-          className="bg-red-500 rounded-md space-x-3 space-y-2 px-8 py-2"
-          onClick={() => adicionarProduto()}
+          className="bg-purple-500 hover:bg-purple-700 text-white font-semibold rounded-md px-6 py-3 transition-colors duration-200"
         >
-          Adicionar
+          Adicionar Pedido
         </button>
-      </div>
+      </form>
     </div>
   );
 }
