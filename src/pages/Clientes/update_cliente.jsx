@@ -25,7 +25,15 @@ const AtualizarCliente = forwardRef(({ onSubmit }, ref) => {
   }
 
   return (
-    <dialog ref={dialogRef} className="rounded-lg p-0 bg-transparent">
+    <dialog
+      ref={dialogRef}
+      className="rounded-lg p-0 bg-transparent"
+      onClick={(e) => {
+        if (e.target === dialogRef.current) {
+          dialogRef.current.close();
+        }
+      }}
+    >
       <form
         onSubmit={handleSubmit}
         className="space-y-4 bg-purple-600 rounded-lg p-8 w-[500px] shadow-lg"

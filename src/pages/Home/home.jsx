@@ -9,6 +9,11 @@ function Home() {
   const [pagina, setPagina] = useState("clientes");
   const navigate = useNavigate();
 
+  function logOut() {
+    localStorage.removeItem("token");
+    navigate(-1);
+  }
+
   return (
     <div className="flex min-h-screen bg-purple-100">
       <nav className="bg-purple-700 w-48 min-h-screen p-6 flex flex-col space-y-6">
@@ -37,7 +42,7 @@ function Home() {
           Pedidos
         </button>
         <button
-          onClick={() => navigate(-1)}
+          onClick={logOut}
           className="flex gap-2 text-white font-semibold py-3 rounded-md transition-colors duration-300 hover:bg-purple-600 "
         >
           <LogOut />

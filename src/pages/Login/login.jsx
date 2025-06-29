@@ -1,5 +1,5 @@
 import { LogIn } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
@@ -13,12 +13,15 @@ function Login() {
   function Logar(emailInput, passwordInput) {
     if (emailInput !== email || passwordInput !== senha) {
       alert("Email e/ou senha incorretos");
-      setEmail("");
-      setPassword("");
     } else {
-      localStorage.setItem("token", true);
+      localStorage.setItem("token", "true");
       navigate("/home");
     }
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    Logar(_email, _password);
   }
 
   return (
@@ -27,30 +30,34 @@ function Login() {
         <h1 className="text-3xl font-extrabold text-center text-white tracking-wide">
           Login
         </h1>
-        <input
-          type="email"
-          placeholder="Informe o email"
-          className="w-full px-4 py-3 rounded-md bg-purple-700 text-white placeholder-purple-300 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          value={_email}
-          onChange={(event) => setEmail(event.target.value)}
-          autoComplete="username"
-        />
-        <input
-          type="password"
-          placeholder="Informe a senha"
-          className="w-full px-4 py-3 rounded-md bg-purple-700 text-white placeholder-purple-300 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          value={_password}
-          onChange={(event) => setPassword(event.target.value)}
-          autoComplete="current-password"
-        />
-        <button
-          onClick={() => Logar(_email, _password)}
-          className="w-full flex items-center justify-center space-x-2 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-semibold rounded-md py-3 shadow-md transition-colors duration-200"
-          type="button"
-        >
-          <LogIn size={20} />
-          <span>Logar</span>
-        </button>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Informe o email"
+            className="w-full px-4 py-3 rounded-md bg-purple-700 text-white placeholder-purple-300 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            value={_email}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="username"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Informe a senha"
+            className="w-full px-4 py-3 rounded-md bg-purple-700 text-white placeholder-purple-300 border border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            value={_password}
+            onChange={(event) => setPassword(event.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full flex items-center justify-center space-x-2 bg-yellow-400 hover:bg-yellow-300 text-purple-900 font-semibold rounded-md py-3 shadow-md transition-colors duration-200"
+          >
+            <LogIn size={20} />
+            <span>Logar</span>
+          </button>
+        </form>
       </div>
     </div>
   );

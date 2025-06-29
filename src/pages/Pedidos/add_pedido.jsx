@@ -67,6 +67,7 @@ function AddPedido({ api_url, setPedidos }) {
           <div key={field.id} className="flex gap-2 items-center">
             <input
               type="text"
+              required
               placeholder={`Item ${index + 1}`}
               {...register(`itens.${index}.nome`, {
                 required: "O item é obrigatório",
@@ -76,6 +77,7 @@ function AddPedido({ api_url, setPedidos }) {
             <input
               type="number"
               min={1}
+              required
               placeholder="Qtd"
               {...register(`itens.${index}.quantidade`, {
                 required: "Qtd obrigatória",
@@ -103,6 +105,7 @@ function AddPedido({ api_url, setPedidos }) {
 
         <input
           type="text"
+          required
           placeholder="Nome do cliente"
           {...register("clienteNome", {
             required: "Nome do cliente é obrigatório",

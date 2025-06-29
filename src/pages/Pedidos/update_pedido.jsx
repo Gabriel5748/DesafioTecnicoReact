@@ -11,7 +11,7 @@ import { Plus, Trash2, X } from "lucide-react";
 
 const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
   const [open, setOpen] = useState(false);
-  const [currentPedido, setCurrentPedido] = useState(null);
+  const [pedidoAtual, setpedidoAtual] = useState(null);
 
   const { register, control, handleSubmit, reset, setValue } = useForm();
   const { fields, append, remove } = useFieldArray({
@@ -21,8 +21,7 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
 
   useImperativeHandle(ref, () => ({
     open: (pedido) => {
-      setCurrentPedido(pedido);
-      setValue("clienteNome", pedido.clienteNome);
+      setpedidoAtual(pedido);
       setValue("itens", pedido.itens);
       setOpen(true);
     },
@@ -35,8 +34,7 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
 
   const onFormSubmit = (data) => {
     const pedidoAtualizado = {
-      ...currentPedido,
-      clienteNome: data.clienteNome,
+      ...pedidoAtual,
       itens: data.itens,
       data: new Date().toISOString(),
     };
@@ -48,7 +46,7 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle className="flex justify-between items-center bg-purple-600 text-white">
-        <span>Editar Pedido #{currentPedido?.id}</span>
+        <span>Editar Pedido #{pedidoAtual?.id}</span>
         <IconButton onClick={handleClose} className="text-white">
           <X size={20} />
         </IconButton>
@@ -58,21 +56,12 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
         <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Cliente
-            </label>
-            <input
-              {...register("clienteNome", { required: true })}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
               Itens do Pedido
             </label>
             {fields.map((item, index) => (
               <div key={item.id} className="flex space-x-2 items-center">
                 <input
+                  disabled={true}
                   {...register(`itens.${index}.nome`, { required: true })}
                   placeholder="Nome do item"
                   className="flex-1 p-2 border rounded"

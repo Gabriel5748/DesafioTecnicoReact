@@ -2,19 +2,22 @@ import { useState } from "react";
 import { Tag } from "lucide-react";
 
 function AddProduto({ api_url, setProdutos }) {
-  let [name, setName] = useState("");
-  let [preco, setPreco] = useState("");
-  let [estoque, setEstoque] = useState("");
-  let [categoria, setCategoria] = useState("");
-  let [addButtonProduct, setToggleProduct] = useState(false);
+  const [name, setName] = useState("");
+  const [preco, setPreco] = useState("");
+  const [estoque, setEstoque] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [addButtonProduct, setToggleProduct] = useState(false);
 
-  async function adicionarProduto() {
-    let produto = {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const produto = {
       nome: name,
       preco: preco,
       estoque: estoque,
       categoria: categoria,
     };
+
     const response = await fetch(api_url, {
       method: "POST",
       body: JSON.stringify(produto),
@@ -33,13 +36,11 @@ function AddProduto({ api_url, setProdutos }) {
     } else {
       alert("Falha ao adicionar novo produto!");
     }
-  }
+  };
 
-  function addProductIsChecked() {
-    addButtonProduct = addButtonProduct
-      ? setToggleProduct(false)
-      : setToggleProduct(true);
-  }
+  const toggleForm = () => {
+    setToggleProduct((prev) => !prev);
+  };
 
   return (
     <div>
@@ -47,54 +48,58 @@ function AddProduto({ api_url, setProdutos }) {
         <button
           type="button"
           className="flex flex-row gap-2 font-bold"
-          onClick={addProductIsChecked}
+          onClick={toggleForm}
         >
           <Tag />
           <h2>Adicionar Produto</h2>
         </button>
       </div>
-      <div
-        className={`${
-          addButtonProduct ? "flex" : "hidden"
-        } flex-col gap-5 bg-purple-600 rounded-lg p-8 w-[500px] shadow-lg`}
-      >
-        <input
-          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          type="text"
-          placeholder="Informe o nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          type="text"
-          placeholder="Informe o preço unitário"
-          value={preco}
-          onChange={(e) => setPreco(e.target.value)}
-        />
-        <input
-          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          type="text"
-          placeholder="Informe a quantidade do estoque"
-          value={estoque}
-          onChange={(e) => setEstoque(e.target.value)}
-        />
-        <input
-          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          type="text"
-          placeholder="Informe a categoria"
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
-        />
 
-        <button
-          type="submit"
-          className="bg-purple-500 hover:bg-purple-700 text-white font-semibold rounded-md px-6 py-3 transition-colors duration-200"
-          onClick={adicionarProduto}
+      {addButtonProduct && (
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-5 bg-purple-600 rounded-lg p-8 w-[500px] shadow-lg"
         >
-          Adicionar
-        </button>
-      </div>
+          <input
+            className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            type="text"
+            placeholder="Informe o nome do produto"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            type="numeric"
+            placeholder="Informe o preço unitário"
+            value={preco}
+            onChange={(e) => setPreco(e.target.value)}
+            required
+          />
+          <input
+            className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            type="number"
+            placeholder="Informe a quantidade do estoque"
+            value={estoque}
+            onChange={(e) => setEstoque(e.target.value)}
+            min={1}
+            required
+          />
+          <input
+            className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            type="text"
+            placeholder="Informe a categoria"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-purple-500 hover:bg-purple-700 text-white font-semibold rounded-md px-6 py-3 transition-colors duration-200"
+          >
+            Adicionar
+          </button>
+        </form>
+      )}
     </div>
   );
 }

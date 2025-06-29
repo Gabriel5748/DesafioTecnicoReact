@@ -28,51 +28,67 @@ const AtualizarProduto = forwardRef(({ onSubmit }, ref) => {
   }
 
   return (
-    <div>
-      <dialog ref={dialogRef}>
-        <form onSubmit={handleSubmit} className="space-y-2 space-x-2">
-          <div className="flex flex-col gap-5 justify-center items-center bg-purple-400 w-[500px]  rounded-md">
-            <h2 className="font-bold text-2xl text-center">Editar Produto</h2>
-            <input
-              className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-              value={produto.nome}
-              onChange={(e) =>
-                setProduto((prev) => ({ ...prev, nome: e.target.value }))
-              }
-              placeholder="Nome"
-            />
-            <input
-              className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-              value={produto.preco}
-              onChange={(e) =>
-                setProduto((prev) => ({ ...prev, preco: e.target.value }))
-              }
-              placeholder="Preço"
-            />
-            <input
-              className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-              value={produto.estoque}
-              onChange={(e) =>
-                setProduto((prev) => ({ ...prev, estoque: e.target.value }))
-              }
-              placeholder="Estoque"
-            />
-            <input
-              className="bg-purple-400 px-4 py-2 outline-purple-800 rounded-md border-2 placeholder-white"
-              value={produto.categoria}
-              onChange={(e) =>
-                setProduto((prev) => ({ ...prev, categoria: e.target.value }))
-              }
-              placeholder="Categoria"
-            />
+    <dialog
+      ref={dialogRef}
+      className="rounded-lg p-0 bg-transparent"
+      onClick={(e) => {
+        if (e.target === dialogRef.current) {
+          dialogRef.current.close();
+        }
+      }}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-purple-600 rounded-lg p-8 w-[500px] shadow-lg"
+      >
+        <h2 className="font-bold text-2xl text-center text-white mb-4">
+          Editar Produto
+        </h2>
+        <input
+          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+          value={produto.nome}
+          onChange={(e) =>
+            setProduto((prev) => ({ ...prev, nome: e.target.value }))
+          }
+          placeholder="Nome"
+          required
+        />
+        <input
+          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+          value={produto.preco}
+          onChange={(e) =>
+            setProduto((prev) => ({ ...prev, preco: e.target.value }))
+          }
+          placeholder="Preço"
+          required
+        />
+        <input
+          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+          value={produto.estoque}
+          onChange={(e) =>
+            setProduto((prev) => ({ ...prev, estoque: e.target.value }))
+          }
+          placeholder="Estoque"
+          required
+        />
+        <input
+          className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
+          value={produto.categoria}
+          onChange={(e) =>
+            setProduto((prev) => ({ ...prev, categoria: e.target.value }))
+          }
+          placeholder="Categoria"
+          required
+        />
 
-            <button type="submit" className="bg-green-400 px-3 py-1 rounded-md">
-              Salvar
-            </button>
-          </div>
-        </form>
-      </dialog>
-    </div>
+        <button
+          type="submit"
+          className="bg-purple-500 hover:bg-purple-700 text-white font-semibold rounded-md px-6 py-3 transition-colors duration-200 w-full"
+        >
+          Salvar
+        </button>
+      </form>
+    </dialog>
   );
 });
 

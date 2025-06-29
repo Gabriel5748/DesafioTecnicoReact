@@ -11,6 +11,7 @@ import pedidoController from "../controllers/pedidos_controller.js";
 // router.get("/home");
 router.get("/clientes", clienteController.listarClientes);
 router.get("/produtos", produtoController.listarProdutos);
+router.get("/produtos/:id", produtoController.buscarProdutoPorId);
 router.get("/pedidos", pedidoController.listarPedidos);
 
 // ---------POST----------

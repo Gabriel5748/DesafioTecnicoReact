@@ -1,47 +1,31 @@
-import { mkConfig, generateCsv, download } from "export-to-csv";
 import { Download } from "lucide-react";
 import { useState } from "react";
+import { pdf } from "@react-pdf/renderer";
 
-function ExportarDados({ data }) {
-  let [exportButtonIsChecked, toggleExportData] = useState(false);
+function ExportarDados({ element, pdfFileName = "documento.pdf" }) {
+  const [exportButtonIsChecked, toggleExportData] = useState(false);
 
-  function exportDataIsChecked() {
-    exportButtonIsChecked = exportButtonIsChecked
-      ? toggleExportData(false)
-      : toggleExportData(true);
-  }
+  const exportDataIsChecked = () => toggleExportData((prev) => !prev);
 
-  const exportarExcel = () => {
-    if (!Array.isArray(data) || data.length === 0) {
-      alert("Nenhum dado para exportar.");
+  const exportarPDF = async () => {
+    if (!element) {
+      alert("Nenhum conteúdo PDF fornecido.");
       return;
     }
 
-    const dadosFormatados = data.map((pedido) => {
-      const linha = {
-        id: pedido.id,
-        cliente: pedido.clienteNome || pedido.cliente?.nome,
-        data: pedido.data,
-        total: pedido.total,
-      };
+    try {
+      const blob = await pdf(element).toBlob();
+      const url = URL.createObjectURL(blob);
 
-      pedido.itens.forEach((item, index) => {
-        linha[`item_${index + 1}`] = item.nome;
-        linha[`qtd_${index + 1}`] = item.quantidade;
-      });
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = pdfFileName;
+      a.click();
 
-      return linha;
-    });
-
-    const csvConfig = mkConfig({
-      filename: "Dados_Pedido",
-      fieldSeparator: ",",
-      decimalSeparator: ".",
-      useKeysAsHeaders: true,
-    });
-
-    const csv = generateCsv(csvConfig)(dadosFormatados);
-    download(csvConfig)(csv);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Erro ao gerar PDF: " + error.message);
+    }
   };
 
   return (
@@ -60,15 +44,7 @@ function ExportarDados({ data }) {
       <div className={`${exportButtonIsChecked ? "flex" : "hidden"} gap-4`}>
         <button
           type="button"
-          onClick={exportarExcel}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow"
-        >
-          Exportar Para Excel
-        </button>
-
-        <button
-          // onClick={exportarPDF}
-          type="button"
+          onClick={exportarPDF}
           className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow"
         >
           Exportar Para PDF

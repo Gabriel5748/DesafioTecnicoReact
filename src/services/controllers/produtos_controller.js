@@ -4,11 +4,34 @@ const listarProdutos = (req, res) => {
   res.json(produtos);
 };
 
-const verificarProdutoPreco = (nomeProduto) => {
-  const produto = produtos.find((p) => p.nome === nomeProduto);
-  return produto ? produto.preco : null;
+const buscarProdutoPorId = (req, res) => {
+  const id = Number(req.params.id);
+  const produto = produtos.find((p) => p.id === id);
+  if (!produto)
+    return res.status(404).json({ mensagem: "Produto não encontrado" });
+  res.json(produto);
 };
 
+function buscarProduto(nome) {
+  return produtos.find((p) => p.nome === nome);
+}
+
+function verificarEstoque(nome) {
+  const produto = buscarProduto(nome);
+  return produto ? produto.estoque : null;
+}
+
+function verificarProdutoPreco(nome) {
+  const produto = buscarProduto(nome);
+  return produto ? produto.preco : null;
+}
+
+function atualizarEstoque(id, novoEstoque) {
+  const produto = produtos.find((p) => p.id === id);
+  if (!produto) return false;
+  produto.estoque = novoEstoque;
+  return true;
+}
 const adicionarProdutos = (req, res) => {
   const { nome, preco, estoque, categoria } = req.body;
   const id = produtos.length + 1;
@@ -31,10 +54,10 @@ const atualizarProdutos = (req, res) => {
   const index = produtos.findIndex((produto) => produto.id === parseInt(id));
 
   if (index != -1) {
-    produtos[index].nome = nome;
-    produtos[index].preco = preco;
-    produtos[index].estoque = estoque;
-    produtos[index].categoria = categoria;
+    const produtoAtual = produtos[index];
+    const camposParaAtualizar = req.body;
+
+    produtos[index] = { ...produtoAtual, ...camposParaAtualizar };
 
     res.json(produtos[index]);
   } else {
@@ -55,9 +78,14 @@ const removerProdutos = (req, res) => {
 };
 
 export default {
-  verificarProdutoPreco,
+  produtos,
   listarProdutos,
+  buscarProduto,
+  buscarProdutoPorId,
+  verificarEstoque,
+  verificarProdutoPreco,
   adicionarProdutos,
   atualizarProdutos,
   removerProdutos,
+  atualizarEstoque,
 };

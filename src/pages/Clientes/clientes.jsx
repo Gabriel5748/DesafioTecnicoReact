@@ -1,4 +1,3 @@
-import { DataGrid } from "@mui/x-data-grid";
 // import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import "@mui/x-data-grid/themeAugmentation";
 import { useEffect, useRef, useState } from "react";
@@ -7,6 +6,8 @@ import AddCliente from "./add_cliente";
 import MyDataGrid from "../../components/datagrid";
 import AtualizarCliente from "./update_cliente";
 import ExportarDados from "../../components/export_data";
+import ExportarPDF from "../../components/Export/export_pdf";
+// import ExportarExcel from "../../components/Export/export_excel";
 
 function Clientes() {
   const api_url = "http://localhost:3000/api/clientes";
@@ -93,7 +94,16 @@ function Clientes() {
           api_url={api_url}
         ></AddCliente>
 
-        <ExportarDados data={clientes}></ExportarDados>
+        <ExportarDados
+          element={
+            <ExportarPDF
+              data={clientes}
+              titulo="DataGrid Clientes"
+              columns={clienteColumns}
+            />
+          }
+          pdfFileName="clientes.pdf"
+        />
       </div>
       <AtualizarCliente ref={atualizarRef} onSubmit={salvarEdicao} />{" "}
     </div>
