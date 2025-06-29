@@ -3,7 +3,6 @@ import MyDataGrid from "../../components/datagrid";
 import AtualizarProduto from "./update_produto";
 import AddProduto from "./add_produto";
 import ExportarDados from "../../components/export_data";
-import ExportarPDF from "../../components/Export/export_pdf";
 
 function Produtos() {
   const api_url = "http://localhost:3000/api/produtos";
@@ -22,6 +21,7 @@ function Produtos() {
       setProdutos(data);
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function editarProduto(produtoId) {
@@ -90,14 +90,10 @@ function Produtos() {
 
         <ExportarDados
           data={produtos}
-          pdfFileName="produtos.pdf"
-          element={
-            <ExportarPDF
-              data={produtos}
-              columns={produtoColumns}
-              titulo={"DataGrid Produtos"}
-            />
-          }
+          columns={produtoColumns}
+          excelFileName={"produtos"}
+          pdfFileName="produtos"
+          isPedido={false}
         ></ExportarDados>
       </div>
       <AtualizarProduto ref={atualizarRef} onSubmit={salvarEdicao} />{" "}

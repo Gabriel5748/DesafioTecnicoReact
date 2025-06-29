@@ -1,4 +1,9 @@
 import { forwardRef, useRef, useState, useImperativeHandle } from "react";
+import {
+  formatarCPF,
+  formatarCNPJ,
+  formatarTelefone,
+} from "../../components/Formatter/formatter";
 
 const AtualizarCliente = forwardRef(({ onSubmit }, ref) => {
   const dialogRef = useRef();
@@ -64,17 +69,23 @@ const AtualizarCliente = forwardRef(({ onSubmit }, ref) => {
           className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
           value={cliente.telefone}
           onChange={(e) =>
-            setCliente((prev) => ({ ...prev, telefone: e.target.value }))
+            setCliente((prev) => ({
+              ...prev,
+              telefone: formatarTelefone(e.target.value),
+            }))
           }
           placeholder="Telefone"
           required
-          type="tel"
+          type="text"
         />
         <input
           className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
           value={cliente.cpf}
           onChange={(e) =>
-            setCliente((prev) => ({ ...prev, cpf: e.target.value }))
+            setCliente((prev) => ({
+              ...prev,
+              cpf: formatarCPF(e.target.value),
+            }))
           }
           placeholder="CPF"
           required
@@ -83,7 +94,10 @@ const AtualizarCliente = forwardRef(({ onSubmit }, ref) => {
           className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 w-full"
           value={cliente.cnpj}
           onChange={(e) =>
-            setCliente((prev) => ({ ...prev, cnpj: e.target.value }))
+            setCliente((prev) => ({
+              ...prev,
+              cnpj: formatarCNPJ(e.target.value),
+            }))
           }
           placeholder="CNPJ"
         />

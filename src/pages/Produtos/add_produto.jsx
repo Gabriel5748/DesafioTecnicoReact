@@ -70,10 +70,17 @@ function AddProduto({ api_url, setProdutos }) {
           />
           <input
             className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            type="numeric"
+            type="text"
             placeholder="Informe o preço unitário"
             value={preco}
-            onChange={(e) => setPreco(e.target.value)}
+            onChange={(e) => {
+              let valor = e.target.value
+                .replace(/[^0-9.]/g, "")
+                .replace(/(\..*?)\./g, "$1");
+
+              if (valor.startsWith(".")) return;
+              setPreco(valor);
+            }}
             required
           />
           <input

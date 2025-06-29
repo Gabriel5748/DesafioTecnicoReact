@@ -3,7 +3,6 @@ import MyDataGrid from "../../components/datagrid";
 import AddPedido from "./add_pedido";
 import ExportarDados from "../../components/export_data";
 import AtualizarPedido from "../Pedidos/update_pedido";
-import ExportarPDF from "../../components/Export/export_pdf";
 
 function Pedidos() {
   const api_url = "http://localhost:3000/api/pedidos";
@@ -100,14 +99,10 @@ function Pedidos() {
         <AddPedido api_url={api_url} setPedidos={setPedidos}></AddPedido>
         <ExportarDados
           data={pedidos}
-          pdfFileName="pedidos.pdf"
-          element={
-            <ExportarPDF
-              data={pedidos}
-              titulo={"DataGrid Pedidos"}
-              columns={pedidoColumns}
-            />
-          }
+          columns={pedidoColumns}
+          excelFileName={"pedidos"}
+          pdfFileName={"pedidos"}
+          isPedido={true}
         ></ExportarDados>
         <AtualizarPedido ref={atualizarRef} onSubmit={salvarEdicao} />
       </div>

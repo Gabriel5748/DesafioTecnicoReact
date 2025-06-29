@@ -16,34 +16,37 @@ function Home() {
 
   return (
     <div className="flex min-h-screen bg-purple-100">
-      <nav className="bg-purple-700 w-48 min-h-screen p-6 flex flex-col space-y-6">
-        <button
-          onClick={() => setPagina("clientes")}
-          className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
-            pagina === "clientes" ? "bg-purple-400" : "hover:bg-purple-600"
-          }`}
-        >
-          Clientes
-        </button>
-        <button
-          onClick={() => setPagina("produtos")}
-          className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
-            pagina === "produtos" ? "bg-purple-400" : "hover:bg-purple-600"
-          }`}
-        >
-          Produtos
-        </button>
-        <button
-          onClick={() => setPagina("pedidos")}
-          className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
-            pagina === "pedidos" ? "bg-purple-400" : "hover:bg-purple-600"
-          }`}
-        >
-          Pedidos
-        </button>
+      <nav className="bg-purple-700 w-48 min-h-screen p-6 flex flex-col justify-between">
+        <div className="flex flex-col space-y-6">
+          <button
+            onClick={() => setPagina("clientes")}
+            className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
+              pagina === "clientes" ? "bg-purple-400" : "hover:bg-purple-600"
+            }`}
+          >
+            Clientes
+          </button>
+          <button
+            onClick={() => setPagina("produtos")}
+            className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
+              pagina === "produtos" ? "bg-purple-400" : "hover:bg-purple-600"
+            }`}
+          >
+            Produtos
+          </button>
+          <button
+            onClick={() => setPagina("pedidos")}
+            className={`text-white font-semibold py-3 rounded-md transition-colors duration-300 ${
+              pagina === "pedidos" ? "bg-purple-400" : "hover:bg-purple-600"
+            }`}
+          >
+            Pedidos
+          </button>
+        </div>
+
         <button
           onClick={logOut}
-          className="flex gap-2 text-white font-semibold py-3 rounded-md transition-colors duration-300 hover:bg-purple-600 "
+          className="flex gap-2 text-white font-semibold py-3 rounded-md transition-colors duration-300 hover:bg-purple-600"
         >
           <LogOut />
           <h2 className="font-bold">Sair</h2>

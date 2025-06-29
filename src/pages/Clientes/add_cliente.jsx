@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { UserRoundPlus } from "lucide-react";
-import { NumericFormat } from "react-number-format";
+import {
+  formatarCPF,
+  formatarCNPJ,
+  formatarTelefone,
+} from "../../components/Formatter/formatter";
 
 function AddCliente({ api_url, setClientes }) {
   let [name, setName] = useState("");
@@ -83,10 +87,10 @@ function AddCliente({ api_url, setClientes }) {
           />
           <input
             className="bg-purple-700 text-white px-4 py-3 rounded-md border border-purple-500 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            type="tel"
+            type="text"
             placeholder="Informe o telefone"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => setPhone(formatarTelefone(e.target.value))}
             required
           />
           <input
@@ -94,7 +98,9 @@ function AddCliente({ api_url, setClientes }) {
             type="text"
             placeholder="Informe o CPF"
             value={cpf}
-            onChange={(e) => setCPF(e.target.value)}
+            onChange={(e) => {
+              setCPF(formatarCPF(e.target.value));
+            }}
             required
           />
           <input
@@ -102,7 +108,9 @@ function AddCliente({ api_url, setClientes }) {
             type="text"
             placeholder="Informe o CNPJ"
             value={cnpj}
-            onChange={(e) => setCNPJ(e.target.value)}
+            onChange={(e) => {
+              setCNPJ(formatarCNPJ(e.target.value));
+            }}
           />
 
           <button

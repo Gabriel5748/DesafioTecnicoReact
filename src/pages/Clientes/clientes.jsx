@@ -6,7 +6,6 @@ import AddCliente from "./add_cliente";
 import MyDataGrid from "../../components/datagrid";
 import AtualizarCliente from "./update_cliente";
 import ExportarDados from "../../components/export_data";
-import ExportarPDF from "../../components/Export/export_pdf";
 // import ExportarExcel from "../../components/Export/export_excel";
 
 function Clientes() {
@@ -72,11 +71,11 @@ function Clientes() {
 
   const clienteColumns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "nome", headerName: "Nome", width: 130 },
-    { field: "email", headerName: "Email", width: 150 },
-    { field: "telefone", headerName: "Telefone", width: 120 },
-    { field: "cpf", headerName: "CPF", width: 120 },
-    { field: "cnpj", headerName: "CNPJ", width: 120 },
+    { field: "nome", headerName: "Nome", width: 200 },
+    { field: "email", headerName: "Email", width: 300 },
+    { field: "telefone", headerName: "Telefone", width: 150 },
+    { field: "cpf", headerName: "CPF", width: 150 },
+    { field: "cnpj", headerName: "CNPJ", width: 150 },
   ];
 
   return (
@@ -95,14 +94,11 @@ function Clientes() {
         ></AddCliente>
 
         <ExportarDados
-          element={
-            <ExportarPDF
-              data={clientes}
-              titulo="DataGrid Clientes"
-              columns={clienteColumns}
-            />
-          }
-          pdfFileName="clientes.pdf"
+          data={clientes}
+          columns={clienteColumns}
+          excelFileName={"clientes"}
+          pdfFileName={"clientes"}
+          isPedido={false}
         />
       </div>
       <AtualizarCliente ref={atualizarRef} onSubmit={salvarEdicao} />{" "}
