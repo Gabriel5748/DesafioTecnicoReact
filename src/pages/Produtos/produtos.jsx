@@ -6,8 +6,7 @@ import ExportarDados from "../../components/export_data";
 
 function Produtos() {
   const api_url = "http://localhost:3000/api/produtos";
-  const [produtos, setProdutos] =
-    useState(JSON.parse(localStorage.getItem("produtos"))) || [];
+  const [produtos, setProdutos] = useState([]);
   const atualizarRef = useRef();
 
   useEffect(() => {

@@ -78,7 +78,6 @@ const AtualizarProduto = forwardRef(({ onSubmit }, ref) => {
             setProduto((prev) => ({ ...prev, categoria: e.target.value }))
           }
           placeholder="Categoria"
-          required
         />
 
         <button

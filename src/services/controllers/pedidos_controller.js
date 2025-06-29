@@ -124,7 +124,10 @@ const adicionarPedidos = async (req, res) => {
       clienteNome: clienteEncontrado.nome,
       clienteId: clienteEncontrado.id,
       data: new Date().toISOString(),
-      itens: itens.map(({ nome, quantidade }) => ({ nome, quantidade })),
+      itens: itens.map(({ nome, quantidade }) => ({
+        nome,
+        quantidade: Number(quantidade),
+      })),
       total,
     };
 
@@ -143,40 +146,61 @@ const atualizarPedidos = async (req, res) => {
   const { itens } = req.body;
 
   const index = pedidos.findIndex((pedido) => pedido.id == parseInt(id));
+  if (index === -1) {
+    return res.status(404).json({ mensagem: "Pedido não encontrado" });
+  }
 
-  if (index !== -1) {
-    const total = itens.reduce((acc, item) => {
-      const preco = produtos_controller.verificarProdutoPreco(item.nome);
-      if (preco === null || preco === undefined) {
-        throw new Error(`Produto "${item.nome}" não encontrado`);
-      }
-      if (!item.quantidade || item.quantidade <= 0) {
-        throw new Error(`Quantidade inválida para o produto "${item.nome}"`);
-      }
-      return acc + preco * item.quantidade;
-    }, 0);
+  try {
+    const pedidoOriginal = pedidos[index];
 
     for (const item of itens) {
       const produto = produtos_controller.buscarProduto(item.nome);
       if (!produto) {
         throw new Error(`Produto "${item.nome}" não encontrado`);
       }
-      const sucesso = await subtrairProdutoEstoque(produto.id, item.quantidade);
-      if (!sucesso) {
-        throw new Error(`Erro ao atualizar estoque do produto "${item.nome}"`);
+
+      const estoqueDisponivel = produtos_controller.verificarEstoque(item.nome);
+      if (estoqueDisponivel === null || item.quantidade > estoqueDisponivel) {
+        throw new Error(
+          `Produto "${item.nome}" não possui estoque suficiente. Solicitado: ${item.quantidade}, Disponível: ${estoqueDisponivel}`
+        );
       }
     }
 
-    const pedidoAtualizado = {
-      ...pedidos[index],
-      itens: itens,
-      quantidade: quantidate,
+    const total = itens.reduce((acc, item) => {
+      const preco = produtos_controller.verificarProdutoPreco(item.nome);
+      if (preco === null) {
+        throw new Error(`Produto "${item.nome}" não encontrado`);
+      }
+      return acc + preco * item.quantidade;
+    }, 0);
+
+    const estoqueRestaurado = await restaurarEstoquePedido(pedidoOriginal);
+    if (!estoqueRestaurado) {
+      throw new Error("Erro ao restaurar o estoque do pedido antigo");
+    }
+
+    for (const item of itens) {
+      const produto = produtos_controller.buscarProduto(item.nome);
+      const sucesso = await subtrairProdutoEstoque(produto.id, item.quantidade);
+      if (!sucesso) {
+        throw new Error(`Erro ao subtrair estoque do produto "${item.nome}"`);
+      }
+    }
+
+    pedidos[index] = {
+      ...pedidoOriginal,
+      itens,
+      total,
       data: new Date().toISOString(),
     };
 
-    res.json({ mensagem: "Pedido alterado com sucesso" });
-  } else {
-    res.json({ mensagem: "Pedido não encontrado" });
+    res.json({
+      mensagem: "Pedido atualizado com sucesso",
+      pedido: pedidos[index],
+    });
+  } catch (error) {
+    return res.status(400).json({ mensagem: error.message });
   }
 };
 

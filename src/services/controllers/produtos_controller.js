@@ -18,7 +18,7 @@ function buscarProduto(nome) {
 
 function verificarEstoque(nome) {
   const produto = buscarProduto(nome);
-  return produto ? produto.estoque : null;
+  return produto ? Number(produto.estoque) : null;
 }
 
 function verificarProdutoPreco(nome) {
@@ -49,15 +49,15 @@ const adicionarProdutos = (req, res) => {
 
 const atualizarProdutos = (req, res) => {
   const { id } = req.params;
-  const { nome, preco, estoque, categoria } = req.body;
+  // const { nome, preco, estoque, categoria } = req.body;
 
   const index = produtos.findIndex((produto) => produto.id === parseInt(id));
 
   if (index != -1) {
     const produtoAtual = produtos[index];
-    const camposParaAtualizar = req.body;
+    const camposAtualizados = req.body;
 
-    produtos[index] = { ...produtoAtual, ...camposParaAtualizar };
+    produtos[index] = { ...produtoAtual, ...camposAtualizados };
 
     res.json(produtos[index]);
   } else {

@@ -6,8 +6,7 @@ import AtualizarPedido from "../Pedidos/update_pedido";
 
 function Pedidos() {
   const api_url = "http://localhost:3000/api/pedidos";
-  const [pedidos, setPedidos] =
-    useState(JSON.parse(localStorage.getItem("pedidos"))) || [];
+  const [pedidos, setPedidos] = useState([]);
   const atualizarRef = useRef();
 
   useEffect(() => {
@@ -40,7 +39,7 @@ function Pedidos() {
     });
 
     if (response.ok) {
-      const pedidoEditado = await response.json();
+      const { pedido: pedidoEditado } = await response.json();
 
       setPedidos((prev) =>
         prev.map((pedido) =>

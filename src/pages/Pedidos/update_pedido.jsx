@@ -32,15 +32,37 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
     reset();
   };
 
-  const onFormSubmit = (data) => {
+  const onFormSubmit = async (data) => {
     const pedidoAtualizado = {
-      ...pedidoAtual,
+      id: pedidoAtual.id,
       itens: data.itens,
-      data: new Date().toISOString(),
     };
 
-    onSubmit(pedidoAtualizado);
-    handleClose();
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/pedidos/${pedidoAtual.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pedidoAtualizado),
+        }
+      );
+
+      const resultado = await response.json();
+
+      if (!response.ok) {
+        alert("Erro ao atualizar pedido: " + resultado.mensagem);
+        return;
+      }
+
+      onSubmit(resultado.pedido);
+      handleClose();
+    } catch (error) {
+      console.error("Erro ao enviar atualização:", error);
+      alert("Erro inesperado ao atualizar pedido.");
+    }
   };
 
   return (
@@ -61,7 +83,6 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
             {fields.map((item, index) => (
               <div key={item.id} className="flex space-x-2 items-center">
                 <input
-                  disabled={true}
                   {...register(`itens.${index}.nome`, { required: true })}
                   placeholder="Nome do item"
                   className="flex-1 p-2 border rounded"
@@ -76,13 +97,15 @@ const AtualizarPedido = forwardRef(({ onSubmit }, ref) => {
                   placeholder="Quantidade"
                   className="w-20 p-2 border rounded"
                 />
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <Trash2 size={18} />
-                </button>
+                {fields.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
               </div>
             ))}
             <button

@@ -10,8 +10,7 @@ import ExportarDados from "../../components/export_data";
 
 function Clientes() {
   const api_url = "http://localhost:3000/api/clientes";
-  const [clientes, setClientes] =
-    useState(JSON.parse(localStorage.getItem("clientes"))) || [];
+  const [clientes, setClientes] = useState([]);
 
   const atualizarRef = useRef();
 
